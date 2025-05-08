@@ -5,13 +5,10 @@ import { getAllImages } from "@/lib/actions/image.actions"
 import Link from 'next/link'
 
 const CommunityPage = async({ searchParams }: SearchParamProps) => {
-  console.log(searchParams)
   const searchQuery = (await searchParams)?.query as string || '';
   let images = await getAllImages()
-  console.log(images)
 
   if(searchQuery){
-    console.log(images)
     images = images.filter(
       (img:any) =>
         img.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

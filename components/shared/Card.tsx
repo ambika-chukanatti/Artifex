@@ -5,7 +5,6 @@ type cardProps = {
 };
 
 const Card = ({image}: cardProps) => {
-  console.log("yes it works",image)
   return (
     <div className='relative group rounded-lg shadow flex items-center'>
       <img 

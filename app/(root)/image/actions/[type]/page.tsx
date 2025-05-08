@@ -3,19 +3,21 @@ import { getUserById } from "@/lib/actions/user.actions"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import ImageActionForm from "@/components/shared/ImageActionFrom"
-import Sidebar from "@/components/shared/Sidebar"
 
 const ImageActionsPage = async({ params }: SearchParamProps) => {
-  const { type } = await params;
-  const { userId } = await auth()
+  const { type } = await params; 
+  const { userId } = await auth();
 
-  if(!type) redirect("/sign-in")
+  if (!type) redirect("/sign-in");
+  if (!userId) redirect("/sign-up");
 
-  const imageAction = imageActions[type]
+  const imageAction = imageActions[type];
+  const user = await getUserById(userId);
 
-  if(!userId) redirect("/sign-up")
-
-  const user = await getUserById(userId)
+  if (!user) {
+    console.error("User not found in DB:", userId);
+    redirect("/sign-up"); 
+  }
 
   return (
     <section className='w-full lg:h-screen flex flex-row'>
@@ -28,7 +30,7 @@ const ImageActionsPage = async({ params }: SearchParamProps) => {
         />
       </div>
     </section>
-  )
-}
+  );
+};
 
 export default ImageActionsPage

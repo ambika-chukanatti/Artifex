@@ -59,6 +59,7 @@ export async function POST(req: Request) {
 
   // CREATE
   if (eventType === "user.created") {
+    console.log("🔔 Clerk webhook received: user.created");
     const { id, email_addresses, image_url, first_name, last_name, username } = evt.data;
 
     const user = {
@@ -71,6 +72,7 @@ export async function POST(req: Request) {
     };
 
     const newUser = await createUser(user);
+    console.log("👤 New user created in DB:", newUser);
     const clerkclient = await clerkClient();
 
     // Set public metadata
