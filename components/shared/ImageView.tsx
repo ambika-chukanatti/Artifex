@@ -28,7 +28,9 @@ const ImageView = ({ image, userId }: {image: UpdatedImageParams, userId: string
             {/* Header */}
             <div className="image-view-header">
                 <div className="profile-hero-badge">Image View</div>
-                <h1 className="profile-hero-title">{image.title}</h1>
+                <h1 className="profile-hero-title">
+                    <span>{image.title}</span>
+                </h1>
             </div>
 
             {/* Images */}
