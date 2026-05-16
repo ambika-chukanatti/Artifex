@@ -2,18 +2,19 @@ import React from 'react'
 
 type cardProps = {
   image: UpdateImageParams
-};
+}
 
-const Card = ({image}: cardProps) => {
+const Card = ({ image }: cardProps) => {
   return (
-    <div className='relative group rounded-lg shadow flex items-center'>
-      <img 
+    <div className="image-card-link" style={{ display: 'block', cursor: 'pointer' }}>
+      <img
         src={image.transformedImage.imageUrl}
-        alt={image.title} 
-        className='w-full h-auto object-cover rounded-lg'
+        alt={image.title}
+        style={{ width: '100%', height: 'auto', objectFit: 'cover', display: 'block', borderRadius: '10px' }}
       />
-      <div className='group-hover:flex flex-col items-center justify-center hidden absolute w-full h-full bg-black bg-opacity-30 text-white text-lg p-4'>
-        <p>{image.title}</p>
+      <div className="card-overlay">
+        <span className="card-overlay-type">{image.transformationType ?? 'image'}</span>
+        <p className="card-overlay-title">{image.title}</p>
       </div>
     </div>
   )

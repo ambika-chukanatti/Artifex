@@ -1,32 +1,34 @@
 "use client"
- 
-import { useForm } from "react-hook-form"
-import { aspectRatioOptions, creditFee, defaultValues, imageActions } from "@/constants"
+
 import { useEffect, useMemo, useState, useTransition } from "react"
-import { AspectRatioKey, debounce, deepMergeObjects } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+
 import MediaUploader from "./MediaUploader"
-import { getCldImageUrl } from "next-cloudinary"
-import { addImage } from "@/lib/actions/image.actions"
-import { redirect, useRouter } from "next/navigation"
 import GeneratedImage from "./GeneratedImage"
 import ImageActionFields from "./ImageActionFields"
 import ImageActionSubmit from "./ImageActionSubmit"
 import Sidebar from "./Sidebar"
-import { urlToPng } from "@/lib/async_utils"
-import { urlPath } from "@/constants"
-import { calculateIncrements } from "@/lib/utils"
-import path from "path"
 
-const ImageActionForm = ({ action, data = null, userId, type, creditBalance }: ImageActionFormProps) => {
-  const imageAction = imageActions[type];
-  const [isSubmitting, setIsSubmitting] = useState(false);
+import { imageActions, defaultValues, urlPath } from "@/constants"
+import { AspectRatioKey, debounce, deepMergeObjects, calculateIncrements } from "@/lib/utils"
+import { addImage } from "@/lib/actions/image.actions"
+import { urlToPng } from "@/lib/async_utils"
+
+const ImageActionForm = ({
+  action,
+  data = null,
+  userId,
+  type,
+  creditBalance,
+}: ImageActionFormProps) => {
+  const imageAction = imageActions[type]
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTransforming, setIsTransforming] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
   const apikey = "sk-HOvmjrQiLvLr6UnCpPY1BR36tThVuqJk9nLTA5DxxxlCMxgy"
 
-  if(action==='Update'){
-    console.log(data)
+  if (action === "Update") {
     data = {
       title: data.title,
       prompt: data?.prompt,
@@ -41,269 +43,223 @@ const ImageActionForm = ({ action, data = null, userId, type, creditBalance }: I
         imageUrl: data.transformedImage?.imageUrl,
         width: data.transformedImage?.width,
         height: data.transformedImage?.height,
-        aspectRatio: data.transformedImage?.aspectRatio
-      }
+        aspectRatio: data.transformedImage?.aspectRatio,
+      },
     }
-  }else{
+  } else {
     data = defaultValues
   }
 
-  const [newTransformation, setNewTransformation] = useState<TransformationParams>(data)
+  const [newTransformation, setNewTransformation] =
+    useState<TransformationParams>(data)
 
-  const onTransformHandler = async({ fieldName, value }: { fieldName: string; value: string }) => {
-    setNewTransformation((prev:any) => ({
-      ...prev,
-      [fieldName]: value
-    }))
+  const onTransformHandler = async ({
+    fieldName,
+    value,
+  }: {
+    fieldName: string
+    value: string
+  }) => {
+    setNewTransformation((prev: any) => ({ ...prev, [fieldName]: value }))
   }
 
   async function createImageSubmit() {
-
     const body = JSON.stringify({
-      text_prompts: [
-        {
-          text: newTransformation.prompt,
-        },
-      ],
+      text_prompts: [{ text: newTransformation.prompt }],
       width: 1024,
       height: 1024,
-      style_preset: newTransformation.selectPrompt
+      style_preset: newTransformation.selectPrompt,
     })
 
-    try{
-      const res = await fetch("https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",{
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: `Bearer ${apikey}`,
-        },
-        body: body
-      })
-
-      if(res.status===200){
+    try {
+      const res = await fetch(
+        "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: `Bearer ${apikey}`,
+          },
+          body,
+        }
+      )
+      if (res.status === 200) {
         const imageData = await res.json()
-        console.log(imageData)
         const imageUrl = `data:image/png;base64,${imageData.artifacts[0].base64}`
-        setNewTransformation((prev:any) => ({
+        setNewTransformation((prev: any) => ({
           ...prev,
-          transformedImage: {
-            ...prev.transformedImage,
-            imageUrl: imageUrl
-          }
+          transformedImage: { ...prev.transformedImage, imageUrl },
         }))
       }
-    }catch(err){
+    } catch (err) {
       alert(err)
     }
   }
 
-  async function getPayload(type:ImageActionTypeKey) {
-   if(type=='recolor'){
-      const payload = newTransformation
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
-      console.log(pngImg)
-
-      const formData = new FormData();
-      formData.append('image', pngImg, 'image.png')
-      formData.append('prompt', payload.prompt)
-      formData.append('select_prompt', payload.selectPrompt)
-
+  async function getPayload(type: ImageActionTypeKey) {
+    if (type === "recolor") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
+      const formData = new FormData()
+      formData.append("image", pngImg, "image.png")
+      formData.append("prompt", newTransformation.prompt)
+      formData.append("select_prompt", newTransformation.selectPrompt)
       return formData
-    }else if(type=='replace'){
-      const payload = newTransformation
-
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
-      const formData = new FormData();
-
-      formData.append('image', pngImg)
-      formData.append('prompt', payload.prompt)
-      formData.append('search_prompt', payload.selectPrompt)
-
+    } else if (type === "replace") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
+      const formData = new FormData()
+      formData.append("image", pngImg)
+      formData.append("prompt", newTransformation.prompt)
+      formData.append("search_prompt", newTransformation.selectPrompt)
       return formData
-    }else if(type==='inpaint'){
-      const payload = newTransformation
-
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
-      const formData = new FormData();
-
-      formData.append('image', pngImg)
-      formData.append('prompt', payload.prompt)
-
+    } else if (type === "inpaint") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
+      const formData = new FormData()
+      formData.append("image", pngImg)
+      formData.append("prompt", newTransformation.prompt)
       return formData
-    }else if(type==='outpaint'){
-      const payload = newTransformation
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
+    } else if (type === "outpaint") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
       const dimension = calculateIncrements({
-        currentWidth: payload.originalImage.width,
-        currentHeight: payload.originalImage.width,
-        targetAspectRatio: payload.transformedImage.aspectRatio
+        currentWidth: newTransformation.originalImage.width,
+        currentHeight: newTransformation.originalImage.width,
+        targetAspectRatio: newTransformation.transformedImage.aspectRatio,
       })
-
-      console.log(dimension)
-
-      const formData = new FormData();
-
-      formData.append('image', pngImg)
-      formData.append('left', dimension.left.toString())
-      formData.append('right', dimension.right.toString())
-      formData.append('up', dimension.up.toString())
-      formData.append('down', dimension.down.toString())
-
+      const formData = new FormData()
+      formData.append("image", pngImg)
+      formData.append("left", dimension.left.toString())
+      formData.append("right", dimension.right.toString())
+      formData.append("up", dimension.up.toString())
+      formData.append("down", dimension.down.toString())
       return formData
-    }else if(type==="remove"){
-      const payload = newTransformation
-
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
-      const formData = new FormData();
-
-      formData.append('image', pngImg)
-
+    } else if (type === "remove") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
+      const formData = new FormData()
+      formData.append("image", pngImg)
       return formData
-    }else if(type==="backgroundRemove"){
-      const payload = newTransformation
-
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
-      const formData = new FormData();
-
-      formData.append('image', pngImg, 'image.png')
-
+    } else if (type === "backgroundRemove") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
+      const formData = new FormData()
+      formData.append("image", pngImg, "image.png")
       return formData
-    }else if(type==="backgroundReplace"){
-      const payload = newTransformation
-
-      const pngImg = await urlToPng(payload.originalImage.imageUrl)
-
-      const formData = new FormData();
-
-      formData.append('image', pngImg)
-      formData.append('background_prompt', payload.prompt)
-
+    } else if (type === "backgroundReplace") {
+      const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
+      const formData = new FormData()
+      formData.append("image", pngImg)
+      formData.append("background_prompt", newTransformation.prompt)
       return formData
     }
   }
 
   async function onSubmitHandler() {
-    if(type==='create'){
+    if (type === "create") {
       createImageSubmit()
-    }else{
-
+    } else {
       const body = await getPayload(type)
-
-      console.log(body)
-
-      try{
-        const res = await fetch(`https://api.stability.ai/v2beta/stable-image/edit/${urlPath[type]}`,
-        {
-          method: "POST",
-          body: body,
-          headers: {
-            Accept: 'application/json',
-            Authorization: `Bearer ${apikey}`,
+      try {
+        const res = await fetch(
+          `https://api.stability.ai/v2beta/stable-image/edit/${urlPath[type]}`,
+          {
+            method: "POST",
+            body,
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${apikey}`,
+            },
           }
-        })
-
-        if(res.status===200){
+        )
+        if (res.status === 200) {
           const imageData = await res.json()
-          console.log(imageData.image)
           const imageUrl = `data:image/png;base64,${imageData.image}`
-          console.log(imageUrl)
-          setNewTransformation((prev:any) => ({
+          setNewTransformation((prev: any) => ({
             ...prev,
-            transformedImage: {
-              ...prev.transformedImage,
-              imageUrl: imageUrl
-            }
+            transformedImage: { ...prev.transformedImage, imageUrl },
           }))
         }
-      }catch(err){
+      } catch (err) {
         console.log(err)
       }
     }
   }
 
   async function onSaveHandler() {
-    try{
-      const data = newTransformation
-
+    try {
       const body = {
-        title: data.title,
-        prompt: data.prompt,
+        title: newTransformation.title,
+        prompt: newTransformation.prompt,
         transformationType: type,
-        selectPrompt: data.selectPrompt,
-        originalImage: data.originalImage,
-        transformedImage: data.transformedImage
+        selectPrompt: newTransformation.selectPrompt,
+        originalImage: newTransformation.originalImage,
+        transformedImage: newTransformation.transformedImage,
       }
-      console.log(body)
-      
-      const res = await addImage({
-        image: body,
-        userId: userId
-      })
-    }catch(err){
+      await addImage({ image: body, userId })
+    } catch (err) {
       alert(err)
     }
   }
 
-  console.log(newTransformation)
-
   return (
-    <section className="w-full flex flex-row">
-      <div className="w-full flex flex-col mt-28 lg:mt-24">
-        <div className='w-full flex flex-col items-center justify-center'>
-          <h1 className='text-3xl font-extrabold mb-2 text-gray-700'>{imageAction.title}</h1>
-          <h4 className='mb-6 text-gray-500 max-w-[500px] text-center'>{imageAction.subTitle}</h4>
+    <div className="image-action-page">
+      <div className="grid-overlay" />
+
+      {/* Main scrollable area */}
+      <main className="image-action-main">
+
+        {/* Hero */}
+        <div className="image-action-hero">
+          <span className="image-action-badge">{imageAction.type}</span>
+          <h1 className="image-action-title">{imageAction.title}</h1>
+          <p className="image-action-subtitle">{imageAction.subTitle}</p>
         </div>
-        <form className="mx-8 lg:ml-4">
-            <div className="w-full flex flex-col lg:flex-row lg:gap-6 items-center justify-center">
-              <div className="lg:hidden w-[665px] flex justify-center">
-                <ImageActionFields
-                  type={type}
-                  OnTransformChange={onTransformHandler}
-                  form={newTransformation}
-                />
-              </div>
-              <div className="w-full mt-6 lg:mt-4 flex flex-col 2xl:flex-row lg:gap-4 justify-center items-center">
-              { type !== 'create' &&
-                  <div className="mb-6 lg:mb-0">
-                      <label className="input-label">Original Image</label>
-                      <MediaUploader 
-                        newTransformation={newTransformation}
-                        setNewTransformation={setNewTransformation}
-                        publicId={newTransformation.publicId}
-                      />
-                  </div>
-              }
-              <div className="">
-                  <label className="input-label">Generated Image</label>
-                  <GeneratedImage
-                      newTransformation={newTransformation}
-                      type={type}
-                      title={newTransformation.title}
-                      isTransforming={isTransforming}
-                      setIsTransforming={setIsTransforming}
-                      hasDownload={false}
-                  />
-              </div>
-              </div>
-              <div className="lg:hidden w-[665px]">
-              <ImageActionSubmit
-                isSubmitting={isSubmitting}
-                isTransforming={isTransforming}
-                handleSubmit={onSubmitHandler}
-                handleSave={onSaveHandler}
+
+        {/* Mobile-only: sidebar fields */}
+        <div className="mobile-fields">
+          <ImageActionFields
+            type={type}
+            OnTransformChange={onTransformHandler}
+            form={newTransformation}
+          />
+        </div>
+
+        {/* Image workspace */}
+        <div className="image-action-workspace">
+          {type !== "create" && (
+            <div className="workspace-panel">
+              <span className="workspace-panel-label">Original Image</span>
+              <MediaUploader
+                newTransformation={newTransformation}
+                setNewTransformation={setNewTransformation}
+                publicId={newTransformation.publicId}
               />
-              </div>
             </div>
-        </form>
-      </div>
-      <div className="hidden lg:flex mt-14">
+          )}
+
+          <div className="workspace-panel">
+            <span className="workspace-panel-label">Generated Image</span>
+            <GeneratedImage
+              newTransformation={newTransformation}
+              type={type}
+              title={newTransformation.title}
+              isTransforming={isTransforming}
+              setIsTransforming={setIsTransforming}
+              hasDownload={false}
+            />
+          </div>
+        </div>
+
+        {/* Mobile-only: submit */}
+        <div className="mobile-submit">
+          <ImageActionSubmit
+            isSubmitting={isSubmitting}
+            isTransforming={isTransforming}
+            handleSubmit={onSubmitHandler}
+            handleSave={onSaveHandler}
+          />
+        </div>
+      </main>
+
+      {/* Desktop sidebar */}
+      <div className="hidden lg:flex">
         <Sidebar
           type={imageAction.type as ImageActionTypeKey}
           form={newTransformation}
@@ -314,7 +270,7 @@ const ImageActionForm = ({ action, data = null, userId, type, creditBalance }: I
           handleSave={onSaveHandler}
         />
       </div>
-    </section>
+    </div>
   )
 }
 
