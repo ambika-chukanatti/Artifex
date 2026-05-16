@@ -996,7 +996,7 @@ body {
   right: 0;
   top: 0;
   bottom: 0;
-  width: 380px;
+  width: 350px;
   background: rgba(8, 12, 20, 0.95);
   border-left: 1px solid rgba(56, 189, 248, 0.08);
   display: none;
@@ -1478,7 +1478,7 @@ body {
   color: #e2e8f0;
   font-family: 'DM Sans', sans-serif;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
   display: flex;
   flex-direction: row;
 }
@@ -1489,25 +1489,28 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 7rem;
+  padding-top: 5rem;
+  gap: 1.25rem;
   padding-bottom: 3rem;
   transition: padding-right 0.3s ease;
+  justify-content: flex-start;
+  overflow: hidden;
 }
 
 @media (min-width: 1024px) {
   .image-action-main {
-    padding-right: 380px;
+    padding-right: 350px;
   }
 }
 
 /* ===== Page Hero ===== */
 
 .image-action-hero {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 1.5rem 2rem;
 }
 
 .image-action-badge {
@@ -1558,11 +1561,12 @@ body {
 /* ===== Workspace (image panels) ===== */
 
 .image-action-workspace {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 0 1.5rem;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.25rem;
 }
 
 @media (min-width: 1280px) {

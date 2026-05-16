@@ -1,67 +1,66 @@
 "use client"
 
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import Image from 'next/image'
-import { Button } from '../ui/button'
 import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { usePathname } from 'next/navigation'
-import { navLinks } from '@/constants'
 
+const navItems = [
+  { href: '/image/actions/create', label: 'Generate' },
+  { href: '/credits', label: 'Buy Credits' },
+  { href: '/profile', label: 'Profile' },
+]
 
 const MobileNav = () => {
   const pathname = usePathname()
 
   return (
-    <section className='fixed top-3 right-5 flex z-10 lg:hidden'>
-        <Sheet>
-          <SheetTrigger>
-            <Image 
-              src="/assets/icons/menu.svg"
-              alt="menu"
-              width={32}
-              height={32}
-              className="cursor-pointer"
-            />
-          </SheetTrigger>
-          <SheetContent className="w-64">
-            <div className='w-full'>
-              <Image src="/logo.png" alt="logo" width={180} height={28}/>
-            </div>
-              <SignedIn>
-                <ul className='flex flex-col gap-7 ml-1 mt-10 text-gray-600'>
-                  {navLinks.map(link => {
-                    const isActive = link.route === pathname
-                    return (
-                      <li key={link.route}>
-                        <Link 
-                          href={link.route} 
-                          className={`flex flex-row items-center gap-4 font-bold ${isActive && 'text-black'}`}>
-                          <Image 
-                            src={link.icon} 
-                            alt={link.label}
-                            width={24}
-                            height={24}
-                            className={`${isActive && 'brightness-20'}`}
-                          />
-                          {link.label}
-                        </Link>
-                      </li>
-                  )})}
-                  <li className="flex flex-row font-bold items-center gap-4 cursor-pointer">
-                    <UserButton/>
-                    <span>User</span>
-                  </li>
-                </ul>
-              </SignedIn>  
-              <SignedOut>
-                <Button asChild>
-                  <Link href="/sign-in">Login</Link>
-                </Button>
-              </SignedOut>
-          </SheetContent>
-        </Sheet>
-      </section>
+    <Sheet>
+      <SheetTrigger className="mobile-trigger">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+      </SheetTrigger>
+
+      <SheetContent side="right" className="mobile-sheet">
+        {/* Logo */}
+        <div className="mobile-sheet-logo">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+              <path d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z" stroke="#38bdf8" strokeWidth="1.4" fill="rgba(56,189,248,0.07)"/>
+              <path d="M14 7L21 11V17L14 21L7 17V11L14 7Z" fill="rgba(56,189,248,0.15)" stroke="#38bdf8" strokeWidth="1"/>
+              <circle cx="14" cy="14" r="2.5" fill="#38bdf8" opacity="0.9"/>
+            </svg>
+            <span className="header-logo-text">
+              ARTIF<span className="header-logo-accent">EX</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Nav links */}
+        <nav className="mobile-sheet-nav">
+          {navItems.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`mobile-nav-link${pathname === href ? ' active' : ''}`}
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Footer */}
+        <div className="mobile-sheet-footer">
+          <SignedIn>
+            <UserButton showName afterSignOutUrl="/" />
+          </SignedIn>
+          <SignedOut>
+            <Link href="/sign-in" className="login-btn">Login</Link>
+          </SignedOut>
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }
 
