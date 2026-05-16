@@ -1,4 +1,4 @@
-import React from 'react'
+import Link from "next/link"
 
 type cardProps = {
   image: UpdateImageParams
@@ -6,7 +6,7 @@ type cardProps = {
 
 const Card = ({ image }: cardProps) => {
   return (
-    <div className="image-card-link" style={{ display: 'block', cursor: 'pointer' }}>
+    <Link href={`/image/${image._id}`} className="image-card-link">
       <img
         src={image.transformedImage.imageUrl}
         alt={image.title}
@@ -16,7 +16,7 @@ const Card = ({ image }: cardProps) => {
         <span className="card-overlay-type">{image.transformationType ?? 'image'}</span>
         <p className="card-overlay-title">{image.title}</p>
       </div>
-    </div>
+    </Link>
   )
 }
 

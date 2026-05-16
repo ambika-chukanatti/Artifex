@@ -1,95 +1,72 @@
 "use client"
 
 import { useToast } from "@/hooks/use-toast"
-import { dataUrl, getImageSize } from "@/lib/utils";
+import { dataUrl } from "@/lib/utils"
 import { CldImage, CldUploadWidget } from "next-cloudinary"
-import { PlaceholderValue } from "next/dist/shared/lib/get-img-props";
-import Image from "next/image"
+import { PlaceholderValue } from "next/dist/shared/lib/get-img-props"
 
 type MediaUploaderProps = {
-    newTransformation: TransformationParams;
-    setNewTransformation: React.Dispatch<any>;
-    publicId: string;
+  newTransformation: TransformationParams
+  setNewTransformation: React.Dispatch<any>
+  publicId: string
 }
 
-const MediaUploader = ({
-    newTransformation,
-    setNewTransformation,
-    publicId
-}: MediaUploaderProps) => {
-    const { toast } = useToast()
-    console.log(newTransformation);
+const MediaUploader = ({ newTransformation, setNewTransformation, publicId }: MediaUploaderProps) => {
+  const { toast } = useToast()
 
-    const onUploadSuccessHandler = (result: any) => {
-        setNewTransformation((prevState: any) => ({
-            ...prevState,
-            publicId: result?.info?.public_id,
-            originalImage: {
-                width: result?.info?.width,
-                height: result?.info?.height,
-                imageUrl: result?.info?.secure_url
-            }
-        }))
+  const onUploadSuccessHandler = (result: any) => {
+    setNewTransformation((prevState: any) => ({
+      ...prevState,
+      publicId: result?.info?.public_id,
+      originalImage: {
+        width: result?.info?.width,
+        height: result?.info?.height,
+        imageUrl: result?.info?.secure_url,
+      },
+    }))
+    toast({ title: "Upload Successful", description: "1 credit deducted", duration: 3000, className: "success-toast" })
+  }
 
-        toast({
-            title: "Upload Successful",
-            description: "one credit deducted",
-            duration: 3000,
-            className: "success-toast"
-        })
-    }
+  const onUploadErrorHandler = () => {
+    toast({ title: "Upload failed", description: "Please try again", duration: 3000, className: "success-toast" })
+  }
 
-    const onUploadErrorHandler = (result: any) => {
-        toast({
-            title: "Something wrong",
-            description: "one credit deducted",
-            duration: 3000,
-            className: "success-toast"
-        })
-    }
-
-    return (
-        <CldUploadWidget
-            uploadPreset="artify"
-            options={{
-                multiple: false,
-                resourceType: "image",  
-            }}
-            onSuccess={onUploadSuccessHandler}
-            onError={onUploadErrorHandler}
-        >
-            {({ open }) => (
-                <div className="flex flex-col mt-2 lg:gap-4">
-                    {publicId ? (
-                        <>
-                            <div className="flex justify-center items-center cursor-pointer overflow-hidden border border-gray-300 w-[665px] h-[450px] lg:w-[600px] lg:w-[600px]">
-                                <CldImage
-                                    width={newTransformation.originalImage.width}
-                                    height={newTransformation.originalImage.width}
-                                    src={publicId}
-                                    alt="image"
-                                    sizes={"(max-width: 665px) 100vw, 100vw"}
-                                    placeholder={dataUrl as PlaceholderValue}
-                                    className="h-fit max-h-[450px] w-auto object-cover p-2 rounded-lg"
-                                />
-                            </div>
-                        </>
-                    ) : (
-                        <div className="border border-gray-300 w-[665px] h-[450px] lg:w-[600px] flex flex-col items-center justify-center" onClick={() => open()}>
-                            <Image
-                                src="/assets/icons/add.svg"
-                                alt="Add Image"
-                                width={24}
-                                height={24}
-                                className="cursor-pointer"
-                            />
-                            <p className="mt-2 text-gray-600">Click here to upload Image</p>
-                        </div>
-                    )}
-                </div>
-            )}
-        </CldUploadWidget>
-    )
+  return (
+    <CldUploadWidget
+      uploadPreset="artify"
+      options={{ multiple: false, resourceType: "image" }}
+      onSuccess={onUploadSuccessHandler}
+      onError={onUploadErrorHandler}
+    >
+      {({ open }) =>
+        publicId ? (
+          <div className="media-uploader-frame" onClick={() => open()}>
+            <CldImage
+              width={newTransformation.originalImage.width}
+              height={newTransformation.originalImage.height}
+              src={publicId}
+              alt="uploaded image"
+              sizes="(max-width: 480px) 100vw, 420px"
+              placeholder={dataUrl as PlaceholderValue}
+              className="media-uploader-img"
+            />
+          </div>
+        ) : (
+          <div className="media-uploader-frame media-uploader-empty" onClick={() => open()}>
+            {/* Upload icon */}
+            <div className="media-uploader-icon">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M11 14V4M11 4L7.5 7.5M11 4L14.5 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M3 15v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+              </svg>
+            </div>
+            <p className="media-uploader-text">Click to upload image</p>
+            <p className="media-uploader-subtext">PNG, JPG, WEBP</p>
+          </div>
+        )
+      }
+    </CldUploadWidget>
+  )
 }
 
 export default MediaUploader
