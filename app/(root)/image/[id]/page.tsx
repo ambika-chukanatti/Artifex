@@ -13,8 +13,10 @@ const ImagePage = async({ params }: SearchParamProps) => {
 
   return (
     <section className="image-page">
+      <div className="grid-overlay" />
       <ImageView image={image} userId={userId} />
     </section>
+    
   )
 }
 
