@@ -1,7 +1,6 @@
 "use client"
 
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { usePathname } from 'next/navigation'
@@ -12,19 +11,43 @@ const navItems = [
   { href: '/profile', label: 'Profile' },
 ]
 
+const Logo = () => (
+  <Link href="/" className="header-logo">
+    {/* Hex icon mark */}
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+      <path
+        d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z"
+        stroke="#38bdf8"
+        strokeWidth="1.4"
+        fill="rgba(56,189,248,0.07)"
+      />
+      <path
+        d="M14 7L21 11V17L14 21L7 17V11L14 7Z"
+        fill="rgba(56,189,248,0.15)"
+        stroke="#38bdf8"
+        strokeWidth="1"
+      />
+      <circle cx="14" cy="14" r="2.5" fill="#38bdf8" opacity="0.9" />
+    </svg>
+
+    {/* Wordmark */}
+    <span className="header-logo-text">
+      ARTIF<span className="header-logo-accent">EX</span>
+    </span>
+  </Link>
+)
+
 const Header = () => {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
     <header className="header">
-      <Link href="/" className="header-logo">
-        <Image src="/logo.png" alt="logo" width={150} height={24} />
-      </Link>
+      <Logo />
 
       <ul className="header-nav">
         {navItems.map(({ href, label }) => (
           <li key={href}>
-            <Link href={href} className={`nav-link ${pathname === href ? 'active' : ''}`}>
+            <Link href={href} className={`nav-link${pathname === href ? ' active' : ''}`}>
               {label}
             </Link>
           </li>
@@ -47,14 +70,14 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent side="right" className="mobile-sheet">
             <div className="mobile-sheet-logo">
-              <Image src="/logo.png" alt="logo" width={120} height={20} />
+              <Logo />
             </div>
             <nav className="mobile-sheet-nav">
               {navItems.map(({ href, label }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`mobile-nav-link ${pathname === href ? 'active' : ''}`}
+                  className={`mobile-nav-link${pathname === href ? ' active' : ''}`}
                 >
                   {label}
                 </Link>

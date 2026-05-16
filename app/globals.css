@@ -68,6 +68,8 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    background: #080c14;
+    min-height: 100vh;
   }
 }
 
@@ -416,16 +418,32 @@ body {
   background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
 }
  
+/* ===== Header logo wordmark ===== */
+
 .header-logo {
   display: flex;
   align-items: center;
+  gap: 0.6rem;
   text-decoration: none;
-  opacity: 0.9;
+  opacity: 0.95;
   transition: opacity 0.2s ease;
 }
- 
+
 .header-logo:hover {
   opacity: 1;
+}
+
+.header-logo-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #e2e8f0;
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1;
+}
+
+.header-logo-accent {
+  color: #38bdf8;
 }
  
 .header-nav {
@@ -1008,6 +1026,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  justify-content: space-between;
   padding: 4.5rem 1.25rem 1rem;
   height: 100%;
   overflow-y: auto;
@@ -1072,6 +1091,7 @@ body {
 .sidebar-body {
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
   gap: 1rem;
   flex: 1;
 }
@@ -1476,7 +1496,6 @@ body {
 
 @media (min-width: 1024px) {
   .image-action-main {
-    padding-left: 380px;
     padding-right: 380px;
   }
 }
