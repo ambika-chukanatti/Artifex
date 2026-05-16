@@ -4,10 +4,9 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import Header from "@/components/shared/Header";
-import { Button } from "@/components/ui/button";
+import Checkout from "@/components/shared/Checkout";
 import { plans } from "@/constants";
 import { getUserById } from "@/lib/actions/user.actions";
-import Checkout from "@/components/shared/Checkout";
 
 const Credits = async () => {
   const { userId } = await auth();
@@ -17,65 +16,122 @@ const Credits = async () => {
   const user = await getUserById(userId);
 
   return (
-    <>
-      <section className="mt-24 mx-32">
-        <div className='w-full flex flex-col items-center'>
-          <h1 className='text-3xl font-extrabold mb-2 text-gray-700'>Buy Credits</h1>
-          <h4 className='mb-12 text-gray-500 max-w-[500px] text-center'>Select suitable plans and enjoy creating art.</h4>
+    <div className="credits-page">
+      <div className="grid-overlay" />
+      <Header />
+
+      <div className="credits-content">
+        {/* Hero */}
+        <div className="credits-hero">
+          <span className="credits-badge">Pricing</span>
+          <h1 className="credits-hero-title">
+            Buy <span>Credits</span>
+          </h1>
+          <p className="credits-hero-subtitle">
+            Select a plan and start generating art instantly.
+          </p>
         </div>
-        <ul className="grid grid-cols-1 gap-12 sm:grid-cols-1 md:grid-cols-2 md:gap-16 xl:grid-cols-3">
-          {plans.map((plan) => (
-            <li key={plan.name} className="w-full flex flex-col justify-center items-center rounded-[16px] border border-gray-300 bg-white p-8 shadow-xl shadow-purple-200/20 lg:max-w-none">
-              <div className="flex items-center flex-col gap-3">
-                <Image src={plan.icon} alt="check" width={50} height={50} />
-                <p className="p-20-bold mt-2 text-lg font-bold">
-                  {plan.name}
-                </p>
-                <p className="h1-semibold text-dark-600">${plan.price}</p>
-                <p className="p-16-regular">{plan.credits} Credits</p>
-              </div>
 
-              {/* Inclusions */}
-              <ul className="flex flex-col gap-5 py-9">
-                {plan.inclusions.map((inclusion) => (
-                  <li
-                    key={plan.name + inclusion.label}
-                    className="flex items-center gap-4"
-                  >
-                    <Image
-                      src={`/assets/icons/${
-                        inclusion.isIncluded ? "check.svg" : "cross.svg"
-                      }`}
-                      alt="check"
-                      width={24}
-                      height={24}
-                    />
-                    <p className="p-16-regular">{inclusion.label}</p>
-                  </li>
-                ))}
-              </ul>
+        {/* Section header */}
+        <section className="plans-section">
+          <div className="plans-section-header">
+            <span className="section-line" />
+            <span className="section-label">Available Plans</span>
+            <span className="section-line-reverse" />
+          </div>
 
-              {plan.name === "Free" ? (
-                <Button>
-                  Free Consumable
-                </Button>
-              ) : (
-                <SignedIn>
-                  <Button>
-                    <Checkout
-                      plan={plan.name}
-                      amount={plan.price}
-                      credits={plan.credits}
-                      buyerId={user._id}
-                    />
-                  </Button>
-                </SignedIn>
-              )}
-            </li>
-          ))}
-        </ul>
-      </section>
-    </>
+          {/* Plans grid */}
+          <ul className="plans-grid">
+            {plans.map((plan, index) => (
+              <li
+                key={plan.name}
+                className={`plan-card${index === 1 ? " plan-card--featured" : ""}`}
+              >
+                {/* Card header */}
+                <div className="plan-card-header">
+                  <div className="plan-card-icon">
+                    <Image src={plan.icon} alt={plan.name} width={26} height={26} />
+                  </div>
+                  <div className="plan-card-title-group">
+                    <p className="plan-card-name">{plan.name}</p>
+                    <p className="plan-card-credits">{plan.credits} Credits</p>
+                  </div>
+                </div>
+
+                {/* Price */}
+                <div className="plan-card-price">
+                  <span className="plan-card-price-currency">$</span>
+                  <span className="plan-card-price-amount">{plan.price}</span>
+                  <span className="plan-card-price-period">/ one-time</span>
+                </div>
+
+                <div className="plan-card-divider" />
+
+                {/* Inclusions */}
+                <ul className="plan-card-inclusions">
+                  {plan.inclusions.map((inclusion) => (
+                    <li
+                      key={plan.name + inclusion.label}
+                      className={`plan-inclusion-item${inclusion.isIncluded ? " plan-inclusion-item--included" : ""}`}
+                    >
+                      <span
+                        className={`plan-inclusion-icon ${
+                          inclusion.isIncluded
+                            ? "plan-inclusion-icon--check"
+                            : "plan-inclusion-icon--cross"
+                        }`}
+                      >
+                        {inclusion.isIncluded ? (
+                          /* Check icon */
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <path
+                              d="M2 5l2.5 2.5L8 2.5"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        ) : (
+                          /* Cross icon */
+                          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                            <path
+                              d="M3 3l4 4M7 3L3 7"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        )}
+                      </span>
+                      {inclusion.label}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTA */}
+                {plan.name === "Free" ? (
+                  <button className="plan-card-cta plan-card-cta--free" disabled>
+                    Free Consumable
+                  </button>
+                ) : (
+                  <SignedIn>
+                    <div className="plan-card-cta plan-card-cta--paid">
+                      <Checkout
+                        plan={plan.name}
+                        amount={plan.price}
+                        credits={plan.credits}
+                        buyerId={user._id}
+                      />
+                    </div>
+                  </SignedIn>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </div>
   );
 };
 
