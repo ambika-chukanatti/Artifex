@@ -2,92 +2,83 @@
 
 import { deleteImage } from "@/lib/actions/image.actions"
 import { download } from "@/lib/utils"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 const ImageView = ({ image, userId }: {image: UpdatedImageParams, userId: string}) => {
+    const router = useRouter()
 
     const handleDownload = () => {
-        download(image.transformedImage.imageUrl,"image")
+        download(image.transformedImage.imageUrl, "image")
     }
 
     const handleDelete = async() => {
-        console.log(image._id)
-        try{
-            const res = await deleteImage(image._id)
-            console.log(res)
-        }catch(err){
+        try {
+            await deleteImage(image._id)
+        } catch(err) {
             console.log(err)
         }
     }
 
     const handleEdit = () => {
-        redirect(`/image/${image._id}/update`)
+        router.push(`/image/${image._id}/update`)
     }
 
     return (
-        <div className="mx-12 w-full flex flex-col mt-28 mb-12 lg:mt-24">
-            <div className='w-full flex flex-col items-center justify-center'>
-            <h1 className='text-3xl font-extrabold mb-2 text-gray-700'>Image</h1>
+        <div className="image-view">
+            {/* Header */}
+            <div className="image-view-header">
+                <div className="profile-hero-badge">Image View</div>
+                <h1 className="profile-hero-title">{image.title}</h1>
             </div>
-            <div className="w-full flex flex-col items-center justify-center mt-4">
-            <div className="text-xl mb-2 text-gray-500 mb-8">
-            {image.title}
-            </div>
-            <div className="flex flex-col lg:flex-row justify-center gap-8 lg:gap-24">
-                { (image.transformationType!='create') &&  
-                (
-                    <div>
-                    <h3 className="mb-4">Original</h3>
-                    <div className="flex items-center justify-center w-[600px] h-[450px] border border-gray-300 p-2">
-                    { image.originalImage.imageUrl ? 
-                        <img 
-                        src={image.originalImage.imageUrl} 
-                        alt={image.title}
-                        className="max-w-[600px] h-[450px] w-auto"
-                        />
-                        :
-                        <div className="w-[600px] h-[450px] flex items-center justify-center">
-                        Image Not Available
+
+            {/* Images */}
+            <div className="image-view-panels">
+                {image.transformationType !== 'create' && (
+                    <div className="image-panel">
+                        <div className="image-panel-header">
+                            <span className="image-panel-label">Original</span>
                         </div>
-                    }
-                    </div>
-                    </div>
-                )
-                }
-                <div className="">
-                <div className="flex flex-row justify-between mb-4">
-                    <h3>Transformed</h3>
-                    <div className="flex flex-row gap-6 items-center">
-                        {image.author.clerkId==userId &&
-                            <div className="flex flex-row gap-6 items-center">
-                                <img 
-                                    src="/assets/icons/delete.svg"
-                                    className="cursor-pointer w-5 h-5"
-                                    onClick={handleDelete}
+                        <div className="image-panel-frame">
+                            {image.originalImage?.imageUrl ? (
+                                <img
+                                    src={image.originalImage.imageUrl}
+                                    alt={image.title}
+                                    className="image-panel-img"
                                 />
-                                <img 
-                                    src="/assets/icons/edit.svg"
-                                    className="cursor-pointer w-5 h-5"
-                                    onClick={handleEdit}
-                                />
-                            </div>
-                        }
-                    <img 
-                        src="/assets/icons/download.svg"
-                        className="cursor-pointer w-6 h-6"
-                        onClick={handleDownload}
-                    />
+                            ) : (
+                                <div className="image-panel-empty">Image Not Available</div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                <div className="image-panel">
+                    <div className="image-panel-header">
+                        <span className="image-panel-label">Transformed</span>
+                        <div className="image-panel-actions">
+                            {image.author.clerkId === userId && (
+                                <>
+                                    <button className="image-action-btn" onClick={handleDelete} title="Delete">
+                                        <img src="/assets/icons/delete.svg" alt="delete" width={16} height={16} />
+                                    </button>
+                                    <button className="image-action-btn" onClick={handleEdit} title="Edit">
+                                        <img src="/assets/icons/edit.svg" alt="edit" width={16} height={16} />
+                                    </button>
+                                </>
+                            )}
+                            <button className="image-action-btn" onClick={handleDownload} title="Download">
+                                <img src="/assets/icons/download.svg" alt="download" width={18} height={18} />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="image-panel-frame">
+                        <img
+                            src={image.transformedImage.imageUrl}
+                            alt={image.title}
+                            className="image-panel-img"
+                        />
                     </div>
                 </div>
-                <div className="flex items-center justify-center w-[600px] h-[450px] border border-gray-300 p-2">
-                    <img 
-                    src={image.transformedImage.imageUrl} 
-                    alt={image.title}
-                    className="max-w-[600px] h-[450px] w-auto"
-                    />
-                </div>
-                </div>
-            </div>
             </div>
         </div>
     )

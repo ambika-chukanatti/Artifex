@@ -17,7 +17,6 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
   let images = await getUserImages(user._id);
 
   if(searchQuery){
-    console.log(images)
     images = images.filter(
       (img:any) =>
         img.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -26,51 +25,73 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <section className="profile">
-        <div className='w-full flex flex-col items-center mt-24'>
-          <h1 className='text-3xl font-extrabold mb-2 text-gray-700'>Profile</h1>
-        </div>
-        <div className="flex flex-col md:flex-row justify-center items-center gap-24 mt-12">
-          <div className="flex flex-col items-center justify-center border rounded-lg w-72 h-36">
-            <p className="p-14-medium md:p-16-medium">CREDITS AVAILABLE</p>
-            <div className="mt-4 flex items-center gap-4">
-              <Image
-                src="/assets/icons/coins.svg"
-                alt="coins"
-                width={50}
-                height={50}
-                className="size-9 md:size-12"
-              />
-              <h2 className="h2-bold text-dark-600">{user.creditBalance}</h2>
+    <main className="profile-page">
+      <div className="grid-overlay" />
+
+      <div className="profile-content">
+        {/* Hero */}
+        <section className="profile-hero">
+          <div className="profile-hero-badge">Your Space</div>
+          <h1 className="profile-hero-title">Profile</h1>
+          <p className="profile-hero-subtitle">Track your credits and creations</p>
+        </section>
+
+        {/* Stats */}
+        <div className="profile-stats">
+          <div className="profile-stat-card">
+            <div className="profile-stat-icon">
+              <Image src="/assets/icons/coins.svg" alt="credits" width={28} height={28} />
+            </div>
+            <div className="profile-stat-info">
+              <span className="profile-stat-label">Credits Available</span>
+              <span className="profile-stat-value">{user.creditBalance}</span>
             </div>
           </div>
 
-          <div className="flex flex-col items-center justify-center border rounded-lg w-72 h-36">
-            <p className="p-14-medium md:p-16-medium">IMAGE MANIPULATION DONE</p>
-            <div className="mt-4 flex items-center gap-4">
-              <Image
-                src="/assets/icons/photo.svg"
-                alt="coins"
-                width={50}
-                height={50}
-                className="size-9 md:size-12"
-              />
-              <h2 className="h2-bold text-dark-600">{images.length}</h2>
+          <div className="profile-stat-divider" />
+
+          <div className="profile-stat-card">
+            <div className="profile-stat-icon">
+              <Image src="/assets/icons/photo.svg" alt="images" width={28} height={28} />
+            </div>
+            <div className="profile-stat-info">
+              <span className="profile-stat-label">Images Created</span>
+              <span className="profile-stat-value">{images.length}</span>
             </div>
           </div>
         </div>
-        <Search />
-      </section>
 
-      <div className='w-11/12 grid lg:grid-cols-4 sm:grid-cols-3 xs:grid-cols-2 grid-cols-1 justify-center gap-8 mt-14 lg:mt-20'>
-        {
-          images && images.map((image: UpdateImageParams) => (
-              <Link href={`/image/${image._id}`}><Card image={image} key={image._id}/></Link>
-          ))
-        }
+        {/* Search */}
+        <div className="profile-search">
+          <Search />
+        </div>
+
+        {/* Section header */}
+        <div className="section-header">
+          <div className="section-line" />
+          <span className="section-label">
+            {searchQuery ? `Results for "${searchQuery}"` : 'Your creations'}
+          </span>
+          <div className="section-line-reverse" />
+        </div>
+
+        {/* Grid */}
+        <div className="profile-images-grid">
+          {images && images.length > 0 ? (
+            images.map((image: UpdateImageParams) => (
+              <Link href={`/image/${image._id}`} key={image._id} className="image-card-link">
+                <Card image={image} />
+              </Link>
+            ))
+          ) : (
+            <div className="empty-state">
+              <div className="empty-icon">✦</div>
+              <p className="empty-text">No images yet</p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
 
