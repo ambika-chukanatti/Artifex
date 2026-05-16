@@ -628,13 +628,13 @@ body {
   background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.2);
   color: #38bdf8;
+  font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
+  padding: 5px 12px;
   border-radius: 100px;
-  margin-bottom: 0;          
-  padding: 3px 10px;         
-  font-size: 0.6rem;
+  margin-bottom: 1.25rem;
 }
  
 .profile-hero-title {
@@ -783,14 +783,11 @@ body {
  
 .image-view {
   width: 100%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;   
-  padding: 5rem 2rem 1.5rem; 
-  gap: 1rem;                 
-  overflow: hidden;
+  padding: 6rem 2rem 3rem;
+  gap: 2rem;
 }
  
 .image-view-header {
@@ -798,21 +795,15 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 0.25rem;      
-  margin-bottom: 0;          
-  padding: 3px 10px;       
-  font-size: 0.6rem;      
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);  /* was 2.4rem — much smaller */
-  margin: 0; 
+  gap: 0.5rem;
 }
  
 .image-view-panels {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
   gap: 2rem;
   width: 100%;
+  align-items: center;
 }
  
 @media (min-width: 1024px) {
@@ -875,21 +866,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: min(440px, 42vw);
-  height: calc(100vh - 220px);
-  max-height: 480px;
+  width: min(600px, 90vw);
+  height: 450px;
   border: 1px solid rgba(56, 189, 248, 0.1);
   border-radius: 12px;
   background: rgba(15, 23, 42, 0.6);
   overflow: hidden;
   position: relative;
 }
-
+ 
 .image-panel-img {
   max-width: 100%;
-  max-height: 100%;
+  height: 100%;
   width: auto;
-  height: auto;
   object-fit: contain;
 }
  
@@ -907,11 +896,6 @@ body {
   .image-panel-frame {
     height: 280px;
   }
-}
-
-.image-view-header .profile-hero-title {
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
-  margin: 0;
 }
 
 /* ===== GeneratedImage ===== */
@@ -1012,7 +996,7 @@ body {
   right: 0;
   top: 0;
   bottom: 0;
-  width: 320px;
+  width: 380px;
   background: rgba(8, 12, 20, 0.95);
   border-left: 1px solid rgba(56, 189, 248, 0.08);
   display: none;
@@ -1042,8 +1026,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  justify-content: flex-start;
-  padding: 4.5rem 1rem 1rem;
+  justify-content: space-between;
+  padding: 4.5rem 1.25rem 1rem;
   height: 100%;
   overflow-y: auto;
 }
@@ -1107,7 +1091,7 @@ body {
 .sidebar-body {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   gap: 1rem;
   flex: 1;
 }
@@ -1502,20 +1486,17 @@ body {
 /* ===== Main Content Area ===== */
 
 .image-action-main {
-  height: 100vh;
-  overflow: hidden;
+  width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4.5rem 1.5rem 1rem;
-  gap: 0.75rem;
+  padding-top: 7rem;
+  padding-bottom: 3rem;
+  transition: padding-right 0.3s ease;
 }
 
 @media (min-width: 1024px) {
   .image-action-main {
-    padding-right: 320px;
-    padding-left: 0;
+    padding-right: 380px;
   }
 }
 
@@ -1526,8 +1507,7 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0;
-  gap: 0.2rem;
+  padding: 0 1.5rem 2rem;
 }
 
 .image-action-badge {
@@ -1537,13 +1517,13 @@ body {
   background: rgba(56, 189, 248, 0.08);
   border: 1px solid rgba(56, 189, 248, 0.2);
   color: #38bdf8;
-  font-size: 0.6rem;
+  font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  padding: 3px 10px;
+  padding: 5px 12px;
   border-radius: 100px;
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
 }
 
 .image-action-badge::before {
@@ -1556,11 +1536,11 @@ body {
 }
 
 .image-action-title {
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-size: clamp(1.4rem, 3vw, 2rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.15;
-  margin: 0;
+  margin: 0 0 0.5rem;
   background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -1568,7 +1548,7 @@ body {
 }
 
 .image-action-subtitle {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: #64748b;
   max-width: 420px;
   line-height: 1.7;
@@ -1922,9 +1902,4 @@ body {
   .generated-image-img {
     max-height: 220px !important;
   }
-}
-
-.image-view-header .profile-hero-title {
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem); 
-  margin: 0;
 }
