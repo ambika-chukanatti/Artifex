@@ -32,7 +32,7 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
         {/* Hero */}
         <section className="profile-hero">
           <div className="profile-hero-badge">Your Space</div>
-          <h1 className="profile-hero-title">Profile</h1>
+          <h1 className="hero-title">Profile</h1>
           <p className="profile-hero-subtitle">Track your credits and creations</p>
         </section>
 
