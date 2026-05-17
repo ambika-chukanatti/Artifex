@@ -25,6 +25,8 @@ const ImageView = ({ image, userId }: {image: UpdatedImageParams, userId: string
 
     return (
         <div className="image-view">
+            <div className="grid-overlay" />
+            
             {/* Header */}
             <div className="image-view-header">
                 <div className="profile-hero-badge">Image View</div>

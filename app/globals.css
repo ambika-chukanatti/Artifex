@@ -186,7 +186,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5rem 0 2.5rem;
+  padding: 5rem 0 0.75rem;
   text-align: center;
 }
 
@@ -327,11 +327,12 @@ body {
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid rgba(56, 189, 248, 0.08);
-  background: transparent;  
+  background: transparent;
   transition: border-color 0.2s ease, transform 0.2s ease;
   position: relative;
   break-inside: avoid;
   margin-bottom: 0.75rem;
+  font-size: 0;
 }
 
 .image-card-link::before {
@@ -635,7 +636,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5rem 0 2rem;
+  padding: 5rem 0 0.75rem;
   text-align: center;
 }
  
@@ -798,11 +799,11 @@ body {
   display: flex;
   flex-direction: row;
 }
- 
+
 @media (min-width: 1024px) {
   .image-page {
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow: visible;
   }
 }
 
@@ -843,8 +844,8 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.image-view-header .credits-hero-title {
-  font-size: clamp(1rem, 2vw, 1.5rem);
+.image-view-header .hero-title {
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
   margin: 0;
 }
 
@@ -918,7 +919,6 @@ body {
   background: rgba(15, 23, 42, 0.6);
   overflow: hidden;
   position: relative;
-  padding: 0.75rem;
 }
 
 .image-panel-img {
@@ -1507,12 +1507,22 @@ body {
 }
 
 .plan-card-cta--paid {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  padding: 0.65rem 1.25rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
   background: rgba(56, 189, 248, 0.12);
   border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  color: #38bdf8;
+  gap: 0.5rem;
 }
 
 .plan-card-cta--paid:hover {
@@ -1549,7 +1559,7 @@ body {
   color: #e2e8f0;
   font-family: 'DM Sans', sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: row;
 }
@@ -1565,8 +1575,8 @@ body {
   padding-bottom: 3rem;
   transition: padding-right 0.3s ease;
   justify-content: flex-start;
-  overflow: hidden;
-  align-items: stretch;
+  overflow: visible;
+  align-items: center;
 }
 
 @media (min-width: 1024px) {
@@ -1640,14 +1650,28 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  gap: 1.25rem;
+  gap: 2rem;
   padding: 0 1rem;
 }
 
 @media (min-width: 1280px) {
   .image-action-workspace {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1023px) {
+  .image-action-workspace {
     flex-direction: column;
     align-items: center;
+  }
+
+  .image-panel-frame {
+    width: min(600px, 90vw);
+    height: auto;
+    min-height: 280px;
   }
 }
 
@@ -1955,12 +1979,6 @@ body {
   max-height: 320px !important;
 }
 
-/* Workspace: side by side panels with tighter gap */
-.image-action-workspace {
-  gap: 1.25rem;
-  padding: 0 1rem;
-}
-
 /* Panel label tighter */
 .workspace-panel-label {
   margin-bottom: 0.25rem;
@@ -1979,4 +1997,11 @@ body {
   .generated-image-img {
     max-height: 220px !important;
   }
+}
+
+.image-card-img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
 }

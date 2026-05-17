@@ -6,11 +6,11 @@ type cardProps = {
 
 const Card = ({ image }: cardProps) => {
   return (
-    <Link href={`/image/${image._id}`} className="image-card-link" style={{ display: 'block', position: 'relative' }}>
+    <Link href={`/image/${image._id}`} className="image-card-link">
       <img
         src={image.transformedImage.imageUrl}
         alt={image.title}
-        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+        className="image-card-img"
       />
       <div className="card-overlay">
         <span className="card-overlay-type">{image.transformationType ?? 'image'}</span>
@@ -19,5 +19,3 @@ const Card = ({ image }: cardProps) => {
     </Link>
   )
 }
-
-export default Card
