@@ -6,11 +6,11 @@ type cardProps = {
 
 const Card = ({ image }: cardProps) => {
   return (
-    <Link href={`/image/${image._id}`} className="image-card-link">
+    <Link href={`/image/${image._id}`} className="image-card-link" style={{ display: 'block', position: 'relative' }}>
       <img
         src={image.transformedImage.imageUrl}
         alt={image.title}
-        style={{ width: '100%', height: 'auto', objectFit: 'cover', display: 'block', borderRadius: '10px' }}
+        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
       />
       <div className="card-overlay">
         <span className="card-overlay-type">{image.transformationType ?? 'image'}</span>

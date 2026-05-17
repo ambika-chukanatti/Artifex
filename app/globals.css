@@ -66,10 +66,15 @@ body {
   * {
     @apply border-border;
   }
+  html {
+    height: 100%;
+    background: #080c14;
+  } 
   body {
     @apply bg-background text-foreground;
     background: #080c14;
     min-height: 100vh;
+    height: 100%;
   }
 }
 
@@ -106,6 +111,9 @@ body {
   opacity: 0;
   transition: opacity 0.22s ease;
   pointer-events: none;
+  height: 100%;        
+  width: 100%;    
+  box-sizing: border-box;
 }
  
 .image-card-link:hover .card-overlay {
@@ -136,7 +144,7 @@ body {
 
 .community-page {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   background: #080c14;
   color: #e2e8f0;
   font-family: 'DM Sans', sans-serif;
@@ -319,10 +327,10 @@ body {
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid rgba(56, 189, 248, 0.08);
-  background: rgba(15, 23, 42, 0.6);
+  background: transparent;  
   transition: border-color 0.2s ease, transform 0.2s ease;
   position: relative;
-  break-inside: avoid;       
+  break-inside: avoid;
   margin-bottom: 0.75rem;
 }
 
@@ -336,6 +344,7 @@ body {
   z-index: 1;
   pointer-events: none;
   border-radius: 10px;
+  box-shadow: none;
 }
 
 .image-card-link:hover {
@@ -375,9 +384,17 @@ body {
   color: #475569;
 }
 
+@media (max-width: 1280px) {
+  .images-grid { columns: 5; }
+}
+
+@media (max-width: 1024px) {
+  .images-grid { columns: 3; }
+}
+
 @media (max-width: 640px) {
   .images-grid {
-    columns: 2;
+    columns: 1;
     column-gap: 0.5rem;
   }
 
@@ -388,14 +405,6 @@ body {
   .stats-row {
     gap: 1rem;
   }
-}
-
-@media (max-width: 1280px) {
-  .images-grid { columns: 4; }
-}
-
-@media (max-width: 1024px) {
-  .images-grid { columns: 3; }
 }
 
 /* ===== Header ===== */
@@ -607,7 +616,7 @@ body {
  
 .profile-page {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   background: #080c14;
   color: #e2e8f0;
   position: relative;
@@ -801,16 +810,17 @@ body {
 
 .image-view {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 4rem 2rem 4rem;
+  padding: 5rem 2rem 4rem;
   gap: 1.5rem;
   position: relative;
   z-index: 1;
+  background: #080c14;
 }
 
 .image-view::before {
@@ -925,17 +935,24 @@ body {
   letter-spacing: 0.05em;
 }
 
+@media (max-width: 1023px) {
+  .image-view-panels {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .image-panel-frame {
+    width: min(600px, 90vw);
+    height: auto;
+    min-height: 280px;
+  }
+}
+
 @media (max-width: 640px) {
   .image-view {
     padding: 5rem 1rem 2rem;
     height: auto;
     overflow: visible;
-  }
-
-  .image-panel-frame {
-    width: min(600px, 90vw);
-    height: 280px;
-    max-height: 280px;
   }
 }
 
@@ -1180,7 +1197,7 @@ body {
 
 .credits-page {
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
   background: #080c14;
   color: #e2e8f0;
   font-family: 'DM Sans', sans-serif;
