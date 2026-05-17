@@ -50,17 +50,21 @@ const Sidebar = ({ type, form, OnTransformChange, isSubmitting, isTransforming, 
 
         {/* Fields + Submit */}
         <div className="sidebar-body">
-          <ImageActionFields
-            type={type}
-            OnTransformChange={OnTransformChange}
-            form={form}
-          />
-          <ImageActionSubmit
-            isSubmitting={isSubmitting}
-            isTransforming={isTransforming}
-            handleSubmit={handleSubmit}
-            handleSave={handleSave}
-          />
+          <div className="sidebar-fields-group"> 
+            <ImageActionFields
+              type={type}
+              OnTransformChange={OnTransformChange}
+              form={form}
+            />
+          </div>
+          <div className="sidebar-fields-group"> 
+            <ImageActionSubmit
+              isSubmitting={isSubmitting}
+              isTransforming={isTransforming}
+              handleSubmit={handleSubmit}
+              handleSave={handleSave}
+            />
+          </div>
         </div>
 
       </div>

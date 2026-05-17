@@ -116,7 +116,7 @@ const Credits = async () => {
                   </button>
                 ) : (
                   <SignedIn>
-                    <div className="plan-card-cta plan-card-cta--paid">
+                    <div className="plan-card-cta--paid">
                       <Checkout
                         plan={plan.name}
                         amount={plan.price}

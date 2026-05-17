@@ -308,9 +308,8 @@ body {
 }
 
 .images-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 0.75rem;
+  columns: 5;
+  column-gap: 0.75rem;
   padding-bottom: 3rem;
 }
 
@@ -323,6 +322,8 @@ body {
   background: rgba(15, 23, 42, 0.6);
   transition: border-color 0.2s ease, transform 0.2s ease;
   position: relative;
+  break-inside: avoid;       
+  margin-bottom: 0.75rem;
 }
 
 .image-card-link::before {
@@ -376,8 +377,8 @@ body {
 
 @media (max-width: 640px) {
   .images-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
+    columns: 2;
+    column-gap: 0.5rem;
   }
 
   .hero-section {
@@ -387,6 +388,14 @@ body {
   .stats-row {
     gap: 1rem;
   }
+}
+
+@media (max-width: 1280px) {
+  .images-grid { columns: 4; }
+}
+
+@media (max-width: 1024px) {
+  .images-grid { columns: 3; }
 }
 
 /* ===== Header ===== */
@@ -792,16 +801,27 @@ body {
 
 .image-view {
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow: visible;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 5rem 2rem 1rem;
+  padding: 4rem 2rem 4rem;
   gap: 1.5rem;
   position: relative;
   z-index: 1;
+}
+
+.image-view::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 15%, rgba(56, 189, 248, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 75%, rgba(139, 92, 246, 0.07) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .image-view-header {
@@ -823,8 +843,9 @@ body {
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 2.5rem;
   width: 100%;
+  padding: 0 2rem;
 }
 
 .image-panel {
@@ -838,7 +859,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 0 0.25rem;
-  height: 30px; /* fixes alignment between panels — one has actions, one doesn't */
+  height: 30px;
 }
 
 .image-panel-label {
@@ -880,13 +901,14 @@ body {
   align-items: center;
   justify-content: center;
   width: min(500px, 42vw);
-  height: calc(100vh - 260px);
-  max-height: 460px;
+  height: auto;
+  min-height: 300px;
   border: 1px solid rgba(56, 189, 248, 0.1);
   border-radius: 12px;
   background: rgba(15, 23, 42, 0.6);
   overflow: hidden;
   position: relative;
+  padding: 0.75rem;
 }
 
 .image-panel-img {
@@ -908,11 +930,6 @@ body {
     padding: 5rem 1rem 2rem;
     height: auto;
     overflow: visible;
-  }
-
-  .image-view-panels {
-    flex-direction: column;
-    align-items: center;
   }
 
   .image-panel-frame {
@@ -1049,7 +1066,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  justify-content: space-between;
+  justify-content: flex-start;
   padding: 4.5rem 1.25rem 1rem;
   height: 100%;
   overflow-y: auto;
@@ -1072,6 +1089,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.sidebar-fields-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-submit-group {
+  margin-top: auto;
 }
 
 .sidebar-label {
@@ -1114,7 +1141,7 @@ body {
 .sidebar-body {
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  justify-content: flex-start; 
   gap: 1rem;
   flex: 1;
 }
@@ -1463,9 +1490,12 @@ body {
 }
 
 .plan-card-cta--paid {
+  display: block;
+  width: 100%;
   background: rgba(56, 189, 248, 0.12);
   border: 1px solid rgba(56, 189, 248, 0.25);
-  color: #38bdf8;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .plan-card-cta--paid:hover {
@@ -1481,6 +1511,7 @@ body {
     grid-template-columns: 1fr;
     max-width: 380px;
     margin: 0 auto;
+    gap: 1.5rem;
   }
 
   .credits-hero {
@@ -1518,7 +1549,7 @@ body {
   transition: padding-right 0.3s ease;
   justify-content: flex-start;
   overflow: hidden;
-  align-items: center;
+  align-items: stretch;
 }
 
 @media (min-width: 1024px) {
@@ -1535,6 +1566,8 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  padding: 0 1rem;
+  margin-bottom: 1rem;
 }
 
 .image-action-badge {
@@ -1591,14 +1624,13 @@ body {
   justify-content: center;
   align-items: flex-start;
   gap: 1.25rem;
+  padding: 0 1rem;
 }
 
 @media (min-width: 1280px) {
   .image-action-workspace {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 2rem;
+    flex-direction: column;
+    align-items: center;
   }
 }
 

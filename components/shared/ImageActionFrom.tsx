@@ -208,7 +208,7 @@ const ImageActionForm = ({
         {/* Hero */}
         <div className="image-action-hero">
           <span className="image-action-badge">{imageAction.type}</span>
-          <h1 className="hero-title">{imageAction.title}</h1>
+          <h1 className="image-action-title">{imageAction.title}</h1>
           <p className="image-action-subtitle">{imageAction.subTitle}</p>
         </div>
 
