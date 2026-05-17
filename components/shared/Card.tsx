@@ -19,3 +19,5 @@ const Card = ({ image }: cardProps) => {
     </Link>
   )
 }
+
+export default Card;
