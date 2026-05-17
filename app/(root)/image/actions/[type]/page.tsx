@@ -21,14 +21,12 @@ const ImageActionsPage = async({ params }: SearchParamProps) => {
 
   return (
     <section className='w-full lg:h-screen flex flex-row'>
-      <div className="w-full lg:mr-[420px] flex flex-col items-center">
         <ImageActionForm
           action="Add"
           userId={user._id}
           type={imageAction.type as ImageActionTypeKey}
           creditBalance={10}
         />
-      </div>
     </section>
   );
 };
