@@ -116,14 +116,12 @@ const Credits = async () => {
                   </button>
                 ) : (
                   <SignedIn>
-                    <div className="plan-card-cta--paid">
                       <Checkout
                         plan={plan.name}
                         amount={plan.price}
                         credits={plan.credits}
                         buyerId={user._id}
                       />
-                    </div>
                   </SignedIn>
                 )}
               </li>

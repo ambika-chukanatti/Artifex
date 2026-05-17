@@ -63,13 +63,7 @@ const CommunityPage = async({ searchParams }: SearchParamProps) => {
         <div className="images-grid">
           {images && images.length > 0 ? (
             images.map((image: UpdateImageParams) => (
-              <Link
-                href={`/image/${image._id}`}
-                key={image._id}
-                className="image-card-link"
-              >
-                <Card image={image} />
-              </Link>
+              <Card image={image} key={image._id} />
             ))
           ) : (
             <div className="empty-state">

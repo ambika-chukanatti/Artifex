@@ -845,7 +845,7 @@ body {
 }
 
 .image-view-header .hero-title {
-  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   margin: 0;
 }
 
@@ -854,7 +854,7 @@ body {
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  gap: 2.5rem;
+  gap: 4rem;
   width: 100%;
   padding: 0 2rem;
 }
@@ -939,6 +939,7 @@ body {
   .image-view-panels {
     flex-direction: column;
     align-items: center;
+    gap: 2.5rem;
   }
 
   .image-panel-frame {
@@ -1507,22 +1508,9 @@ body {
 }
 
 .plan-card-cta--paid {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 0.65rem 1.25rem;
-  border-radius: 8px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s ease;
   background: rgba(56, 189, 248, 0.12);
   border: 1px solid rgba(56, 189, 248, 0.25);
   color: #38bdf8;
-  gap: 0.5rem;
 }
 
 .plan-card-cta--paid:hover {
@@ -1570,9 +1558,9 @@ body {
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 5rem;
+  padding-top: 1.5rem;
   gap: 1.25rem;
-  padding-bottom: 3rem;
+  padding-bottom: 5rem;
   transition: padding-right 0.3s ease;
   justify-content: flex-start;
   overflow: visible;
@@ -1593,8 +1581,14 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 0 1rem;
-  margin-bottom: 1rem;
+  padding: 5rem 1rem 1rem;
+  margin-bottom: 0;
+}
+
+@media (min-width: 1024px) {
+  .image-action-hero {
+    padding-right: 350px;
+  }
 }
 
 .image-action-badge {
@@ -1668,10 +1662,19 @@ body {
     align-items: center;
   }
 
-  .image-panel-frame {
+  .media-uploader-frame {
     width: min(600px, 90vw);
-    height: auto;
-    min-height: 280px;
+    height: 400px;
+  }
+
+  .generated-image-frame,
+  .generated-image-placeholder {
+    width: min(600px, 90vw) !important;
+    height: 400px !important;
+  }
+
+  .generated-image-img {
+    max-height: 400px !important;
   }
 }
 
@@ -1986,16 +1989,18 @@ body {
 
 @media (max-width: 640px) {
   .media-uploader-frame {
-    height: 220px;
+    width: 90vw;
+    height: 350px;
   }
 
   .generated-image-frame,
   .generated-image-placeholder {
-    height: 220px !important;
+    width: 90vw !important;
+    height: 350px !important;
   }
 
   .generated-image-img {
-    max-height: 220px !important;
+    max-height: 350px !important;
   }
 }
 

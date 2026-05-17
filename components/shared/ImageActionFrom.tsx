@@ -202,15 +202,15 @@ const ImageActionForm = ({
     <div className="image-action-page">
       <div className="grid-overlay" />
 
+      {/* Hero — full width, outside main */}
+      <div className="image-action-hero">
+        <span className="image-action-badge">{imageAction.type}</span>
+        <h1 className="image-action-title">{imageAction.title}</h1>
+        <p className="image-action-subtitle">{imageAction.subTitle}</p>
+      </div>
+
       {/* Main scrollable area */}
       <main className="image-action-main">
-
-        {/* Hero */}
-        <div className="image-action-hero">
-          <span className="image-action-badge">{imageAction.type}</span>
-          <h1 className="image-action-title">{imageAction.title}</h1>
-          <p className="image-action-subtitle">{imageAction.subTitle}</p>
-        </div>
 
         {/* Mobile-only: sidebar fields */}
         <div className="mobile-fields">
