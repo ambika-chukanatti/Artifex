@@ -4,10 +4,8 @@ import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../database/mongoose";
 import { handleError } from "../utils";
 import { v2 as cloudinary } from 'cloudinary'
-import { NextResponse } from 'next/server';
 import User from "../database/models/user.model";
 import Image from "../database/models/image.model";
-import { redirect } from "next/navigation";
 
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -21,20 +19,14 @@ const populateUser = (query: any) => query.populate({
   select: '_id firstName lastName clerkId'
 })
 
-// ADD IMAGE
 export async function addImage({ image, userId }: AddImageParams) {
   try {
-    await connectToDatabase();
+    await connectToDatabase()
 
-    const author = await User.findById(userId);
-
-    if (!author) {
-      throw new Error("User not found");
-    }
+    const author = await User.findById(userId)
+    if (!author) throw new Error("User not found")
 
     const cloudinaryImage = await cloudinary.uploader.upload(image.transformedImage.imageUrl)
-
-    console.log(cloudinaryImage)
 
     const newImage = await Image.create({
       ...image,
@@ -45,9 +37,9 @@ export async function addImage({ image, userId }: AddImageParams) {
       author: author._id,
     })
 
-    revalidatePath("/");
-    
-    return NextResponse.json({ success: true, image: newImage });
+    revalidatePath("/")
+
+    return JSON.parse(JSON.stringify(newImage))
   } catch (error) {
     handleError(error)
   }
@@ -55,22 +47,20 @@ export async function addImage({ image, userId }: AddImageParams) {
 
 export async function getImageById(imageId: string) {
   try {
-    await connectToDatabase();
+    await connectToDatabase()
 
-    const image = await populateUser(Image.findById(imageId));
+    const image = await populateUser(Image.findById(imageId))
+    if (!image) throw new Error("Image not found")
 
-    if(!image) throw new Error("Image not found");
-
-    return JSON.parse(JSON.stringify(image));
+    return JSON.parse(JSON.stringify(image))
   } catch (error) {
     handleError(error)
   }
 }
 
-// GET IMAGES
-export async function getAllImages(){
+export async function getAllImages() {
   try {
-    await connectToDatabase();
+    await connectToDatabase()
 
     const images = await Image.find({})
 
@@ -80,36 +70,29 @@ export async function getAllImages(){
   }
 }
 
-// GET IMAGES BY USER
 export async function getUserImages(userId: string) {
   try {
-    await connectToDatabase();
+    await connectToDatabase()
 
-    const images = await populateUser(Image.find({ author: userId }));
+    const images = await populateUser(Image.find({ author: userId }))
 
-    console.log(images)
-
-    return JSON.parse(JSON.stringify(images));
+    return JSON.parse(JSON.stringify(images))
   } catch (error) {
-    handleError(error);
+    handleError(error)
   }
 }
 
 export async function deleteImage(imageId: string) {
   try {
-    await connectToDatabase();
+    await connectToDatabase()
 
     const deletedImage = await Image.findByIdAndDelete(imageId)
+    if (!deletedImage) throw new Error("No image found with the ID")
 
-    if(!deletedImage){
-      throw new Error("No image found with the ID")
-    }
-
-    revalidatePath("/");
+    revalidatePath("/")
 
     return JSON.parse(JSON.stringify(deletedImage))
   } catch (error) {
-    handleError(error);
+    handleError(error)
   }
 }
-

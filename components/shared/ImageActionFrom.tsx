@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState, useTransition } from "react"
+import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 
 import MediaUploader from "./MediaUploader"
@@ -10,9 +10,10 @@ import ImageActionSubmit from "./ImageActionSubmit"
 import Sidebar from "./Sidebar"
 
 import { imageActions, defaultValues, urlPath } from "@/constants"
-import { AspectRatioKey, debounce, deepMergeObjects, calculateIncrements } from "@/lib/utils"
+import { calculateIncrements } from "@/lib/utils"
 import { addImage } from "@/lib/actions/image.actions"
 import { urlToPng } from "@/lib/async_utils"
+import { useToast } from "@/hooks/use-toast"
 
 const ImageActionForm = ({
   action,
@@ -25,8 +26,8 @@ const ImageActionForm = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isTransforming, setIsTransforming] = useState(false)
   const [isPending, startTransition] = useTransition()
-  const router = useRouter()
-  const apikey = "sk-HOvmjrQiLvLr6UnCpPY1BR36tThVuqJk9nLTA5DxxxlCMxgy"
+  const { toast } = useToast()
+  const apikey = "sk-ubDlsrKhcm2R6AoDW2iQFihdxk53N9kuqbyhMVaqyhLfmeYc"
 
   if (action === "Update") {
     data = {
@@ -91,9 +92,21 @@ const ImageActionForm = ({
           ...prev,
           transformedImage: { ...prev.transformedImage, imageUrl },
         }))
+      } else {
+        toast({
+          title: "Generation failed",
+          description: `Error ${res.status} — please try again`,
+          duration: 4000,
+          className: "toast-error",
+        })
       }
     } catch (err) {
-      alert(err)
+      toast({
+        title: "Generation failed",
+        description: "Something went wrong, please try again",
+        duration: 4000,
+        className: "toast-error",
+      })
     }
   }
 
@@ -136,6 +149,7 @@ const ImageActionForm = ({
       const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
       const formData = new FormData()
       formData.append("image", pngImg)
+      formData.append("search_prompt", newTransformation.selectPrompt)
       return formData
     } else if (type === "backgroundRemove") {
       const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
@@ -146,17 +160,19 @@ const ImageActionForm = ({
       const pngImg = await urlToPng(newTransformation.originalImage.imageUrl)
       const formData = new FormData()
       formData.append("image", pngImg)
-      formData.append("background_prompt", newTransformation.prompt)
+      formData.append("prompt", newTransformation.prompt)
+      formData.append("output_format", "png")
       return formData
     }
   }
 
   async function onSubmitHandler() {
-    if (type === "create") {
-      createImageSubmit()
-    } else {
-      const body = await getPayload(type)
-      try {
+    setIsTransforming(true)
+    try {
+      if (type === "create") {
+        await createImageSubmit()
+      } else {
+        const body = await getPayload(type)
         const res = await fetch(
           `https://api.stability.ai/v2beta/stable-image/edit/${urlPath[type]}`,
           {
@@ -175,14 +191,29 @@ const ImageActionForm = ({
             ...prev,
             transformedImage: { ...prev.transformedImage, imageUrl },
           }))
+        } else {
+          toast({
+            title: "Generation failed",
+            description: `Error ${res.status} — please try again`,
+            duration: 4000,
+            className: "toast-error",
+          })
         }
-      } catch (err) {
-        console.log(err)
       }
+    } catch (err) {
+      toast({
+        title: "Generation failed",
+        description: "Something went wrong, please try again",
+        duration: 4000,
+        className: "toast-error",
+      })
+    } finally {
+      setIsTransforming(false)
     }
   }
 
   async function onSaveHandler() {
+    setIsSubmitting(true)
     try {
       const body = {
         title: newTransformation.title,
@@ -194,7 +225,14 @@ const ImageActionForm = ({
       }
       await addImage({ image: body, userId })
     } catch (err) {
-      alert(err)
+      toast({
+        title: "Save failed",
+        description: "Something went wrong, please try again",
+        duration: 4000,
+        className: "toast-error",
+      })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -202,17 +240,14 @@ const ImageActionForm = ({
     <div className="image-action-page">
       <div className="grid-overlay" />
 
-      {/* Main scrollable area */}
       <main className="image-action-main">
 
-        {/* Hero — full width, outside main */}
         <div className="image-action-hero">
           <span className="image-action-badge">{imageAction.type}</span>
           <h1 className="image-action-title">{imageAction.title}</h1>
           <p className="image-action-subtitle">{imageAction.subTitle}</p>
         </div>
 
-        {/* Mobile-only: sidebar fields */}
         <div className="mobile-fields">
           <ImageActionFields
             type={type}
@@ -221,7 +256,6 @@ const ImageActionForm = ({
           />
         </div>
 
-        {/* Image workspace */}
         <div className="image-action-workspace">
           {type !== "create" && (
             <div className="workspace-panel">
@@ -247,7 +281,6 @@ const ImageActionForm = ({
           </div>
         </div>
 
-        {/* Mobile-only: submit */}
         <div className="mobile-submit">
           <ImageActionSubmit
             isSubmitting={isSubmitting}
@@ -258,7 +291,6 @@ const ImageActionForm = ({
         </div>
       </main>
 
-      {/* Desktop sidebar */}
       <div className="hidden lg:flex">
         <Sidebar
           type={imageAction.type as ImageActionTypeKey}
