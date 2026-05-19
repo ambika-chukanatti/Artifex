@@ -20,15 +20,13 @@ const ImageUpdatePage = async({ params }: SearchParamProps) => {
 
   return (
     <section className='w-full lg:h-screen flex flex-row'>
-      <div className="w-full lg:mr-[420px] flex flex-col items-center">
-        <ImageActionForm
-          action="Update"
-          userId={user._id}
-          type={image.transformationType as ImageActionTypeKey}
-          data={image}
-          creditBalance={10}
-        />
-      </div>
+      <ImageActionForm
+        action="Update"
+        userId={user._id}
+        type={image.transformationType as ImageActionTypeKey}
+        data={image}
+        creditBalance={10}
+      />
     </section>
   )
 }
