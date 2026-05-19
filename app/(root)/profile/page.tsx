@@ -79,9 +79,7 @@ const Profile = async ({ searchParams }: SearchParamProps) => {
         <div className="profile-images-grid">
           {images && images.length > 0 ? (
             images.map((image: UpdateImageParams) => (
-              <Link href={`/image/${image._id}`} key={image._id} className="image-card-link">
                 <Card image={image} />
-              </Link>
             ))
           ) : (
             <div className="empty-state">

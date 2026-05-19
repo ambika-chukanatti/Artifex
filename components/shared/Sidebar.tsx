@@ -6,21 +6,23 @@ import ImageActionSubmit from './ImageActionSubmit'
 import { useRouter } from "next/navigation"
 
 type SideBarProps = {
-    type: ImageActionTypeKey;
-    form: TransformationParams;
-    OnTransformChange: ({ fieldName, value }: { fieldName: string; value: string }) => void;
-    isSubmitting: boolean;
-    isTransforming: boolean;
-    handleSubmit: () => void;
-    handleSave: () => void;
+  type: ImageActionTypeKey;
+  form: TransformationParams;
+  OnTransformChange: ({ fieldName, value }: { fieldName: string; value: string }) => void;
+  isSubmitting: boolean;
+  isTransforming: boolean;
+  handleSubmit: () => void;
+  handleSave: () => void;
 }
 
 const Sidebar = ({ type, form, OnTransformChange, isSubmitting, isTransforming, handleSubmit, handleSave }: SideBarProps) => {
   const router = useRouter()
+  const [isNavigating, setIsNavigating] = useState(false)
 
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedType = event.target.value;
-    if(selectedType) {
+    const selectedType = event.target.value
+    if (selectedType && selectedType !== type) {
+      setIsNavigating(true)
       router.push(`/image/actions/${selectedType}`)
     }
   }
@@ -32,32 +34,42 @@ const Sidebar = ({ type, form, OnTransformChange, isSubmitting, isTransforming, 
         {/* Action selector */}
         <div className="sidebar-field">
           <label className="sidebar-label">Image Action</label>
-          <select
-            onChange={handleTypeChange}
-            value={type}
-            className="sidebar-select"
-          >
-            <option value="create">Create Image</option>
-            <option value="inpaint">In Paint</option>
-            <option value="outpaint">Out Paint</option>
-            <option value="remove">Object Remove</option>
-            <option value="recolor">Object Recolor</option>
-            <option value="replace">Object Replace</option>
-            <option value="backgroundRemove">Background Removal</option>
-            <option value="backgroundReplace">Background Replace</option>
-          </select>
+          <div className="sidebar-select-wrapper">
+            <select
+              onChange={handleTypeChange}
+              value={type}
+              disabled={isNavigating}
+              className={`sidebar-select${isNavigating ? " sidebar-select--loading" : ""}`}
+            >
+              <option value="create">Create Image</option>
+              <option value="inpaint">In Paint</option>
+              <option value="outpaint">Out Paint</option>
+              <option value="remove">Object Remove</option>
+              <option value="recolor">Object Recolor</option>
+              <option value="replace">Object Replace</option>
+              <option value="backgroundRemove">Background Removal</option>
+              <option value="backgroundReplace">Background Replace</option>
+            </select>
+
+            {isNavigating && (
+              <div className="sidebar-select-overlay">
+                <span className="submit-btn-spinner" />
+                <span className="sidebar-select-overlay-text">Loading…</span>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Fields + Submit */}
         <div className="sidebar-body">
-          <div className="sidebar-fields-group"> 
+          <div className={`sidebar-fields-group${isNavigating ? " sidebar-navigating" : ""}`}>
             <ImageActionFields
               type={type}
               OnTransformChange={OnTransformChange}
               form={form}
             />
           </div>
-          <div className="sidebar-fields-group"> 
+          <div className="sidebar-fields-group">
             <ImageActionSubmit
               isSubmitting={isSubmitting}
               isTransforming={isTransforming}

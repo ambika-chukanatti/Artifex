@@ -1,5 +1,8 @@
 "use client"
 
+import { useEffect, useRef } from "react"
+import { useRouter } from "next/navigation"
+
 const ImageActionSubmit = ({
   handleSubmit,
   isTransforming,
@@ -11,6 +14,16 @@ const ImageActionSubmit = ({
   isSubmitting: boolean
   handleSave: () => void
 }) => {
+  const router = useRouter()
+  const wasSaving = useRef(false)
+
+  useEffect(() => {
+    if (wasSaving.current && !isSubmitting) {
+      router.push("/")
+    }
+    wasSaving.current = isSubmitting
+  }, [isSubmitting, router])
+
   return (
     <div className="image-action-submit">
 
@@ -19,6 +32,7 @@ const ImageActionSubmit = ({
         type="button"
         className={`submit-btn submit-btn--primary${isTransforming ? " submit-btn--loading" : ""}`}
         onClick={handleSubmit}
+        disabled={isTransforming}
       >
         {isTransforming ? (
           <>
@@ -27,7 +41,6 @@ const ImageActionSubmit = ({
           </>
         ) : (
           <>
-            {/* Spark icon */}
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
               <path d="M7 1v3M7 10v3M1 7h3M10 7h3M3.22 3.22l2.12 2.12M8.66 8.66l2.12 2.12M3.22 10.78l2.12-2.12M8.66 5.34l2.12-2.12"
                 stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
@@ -41,7 +54,7 @@ const ImageActionSubmit = ({
       <button
         type="button"
         className={`submit-btn submit-btn--secondary${isSubmitting ? " submit-btn--loading" : ""}`}
-        disabled={isSubmitting}
+        disabled={isSubmitting || isTransforming}
         onClick={handleSave}
       >
         {isSubmitting ? (
@@ -51,7 +64,6 @@ const ImageActionSubmit = ({
           </>
         ) : (
           <>
-            {/* Save icon */}
             <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
               <path d="M10.5 11.5H2.5a1 1 0 01-1-1v-9a1 1 0 011-1H9l2.5 2.5v8a1 1 0 01-1 1z"
                 stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round"/>

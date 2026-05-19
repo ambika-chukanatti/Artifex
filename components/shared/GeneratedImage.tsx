@@ -40,7 +40,10 @@ const GeneratedImage = ({
       )}
 
       {newTransformation.transformedImage?.imageUrl ? (
-        <div className="generated-image-frame">
+        <div className={`generated-image-frame${isTransforming ? " generated-image-frame--generating" : ""}`}>
+
+          {isTransforming && <div className="generated-image-scan" />}
+
           <CldImage
             width={newTransformation.transformedImage.height}
             height={newTransformation.transformedImage.width}
@@ -58,6 +61,7 @@ const GeneratedImage = ({
               }, 8000)()
             }}
           />
+
           {isTransforming && (
             <div className="generated-image-loader">
               <Image src="/assets/icons/spinner.svg" alt="transforming" width={40} height={40} />
@@ -66,9 +70,12 @@ const GeneratedImage = ({
           )}
         </div>
       ) : (
-        <div className="generated-image-placeholder">
+        <div className={`generated-image-placeholder${isTransforming ? " generated-image-frame--generating" : ""}`}>
+          {isTransforming && <div className="generated-image-scan" />}
           <span className="generated-image-placeholder-icon">✦</span>
-          <span className="generated-image-placeholder-text">Generated image will appear here</span>
+          <span className="generated-image-placeholder-text">
+            {isTransforming ? "Generating…" : "Generated image will appear here"}
+          </span>
         </div>
       )}
     </div>

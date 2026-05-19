@@ -998,7 +998,6 @@ body {
   max-height: 450px;
   width: auto;
   object-fit: contain;
-  padding: 0.5rem;
   border-radius: 10px;
 }
 
@@ -1672,21 +1671,6 @@ body {
     flex-direction: column;
     align-items: center;
   }
-
-  .media-uploader-frame {
-    width: min(600px, 90vw);
-    height: 400px;
-  }
-
-  .generated-image-frame,
-  .generated-image-placeholder {
-    width: min(600px, 90vw) !important;
-    height: 400px !important;
-  }
-
-  .generated-image-img {
-    max-height: 400px !important;
-  }
 }
 
 /* Panel wrapper */
@@ -1936,7 +1920,6 @@ body {
   width: auto;
   object-fit: contain;
   border-radius: 10px;
-  padding: 0.5rem;
 }
 
 .media-uploader-empty {
@@ -1981,7 +1964,6 @@ body {
 }
 
 /* ===== Resize image panels to fit viewport ===== */
-/* Override the existing generated-image-frame and image-panel-frame sizes */
 
 .generated-image-frame,
 .generated-image-placeholder,
@@ -1990,29 +1972,42 @@ body {
   height: 320px !important;
 }
 
-.generated-image-img {
-  max-height: 320px !important;
-}
+@media (min-width: 641px) and (max-width: 1023px) {
+  .media-uploader-frame {
+    width: min(500px, 90vw) !important;
+    height: 380px !important;
+  }
 
-/* Panel label tighter */
-.workspace-panel-label {
-  margin-bottom: 0.25rem;
+  .generated-image-frame,
+  .generated-image-placeholder,
+  .image-panel-frame {
+    width: min(500px, 90vw) !important;
+    height: 380px !important;
+  }
+
+  .generated-image-img {
+    max-height: 380px !important;
+  }
+
+  .media-uploader-img {
+    max-height: 380px !important;
+  }
 }
 
 @media (max-width: 640px) {
   .media-uploader-frame {
-    width: 90vw;
-    height: 350px;
+    width: 90vw !important;
+    height: 300px !important;
   }
 
   .generated-image-frame,
   .generated-image-placeholder {
     width: 90vw !important;
-    height: 350px !important;
+    height: 300px !important;
   }
 
   .generated-image-img {
-    max-height: 350px !important;
+    max-height: 300px !important;
   }
 }
 
@@ -2021,4 +2016,105 @@ body {
   height: auto;
   object-fit: cover;
   display: block;
+}
+
+/* ===== Generation scan animation ===== */
+
+.generated-image-frame--generating {
+  border-color: rgba(56, 189, 248, 0.25);
+  animation: frame-breathe 2s ease-in-out infinite;
+}
+
+@keyframes frame-breathe {
+  0%, 100% { border-color: rgba(56, 189, 248, 0.12); }
+  50%       { border-color: rgba(56, 189, 248, 0.38); }
+}
+
+.generated-image-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(56, 189, 248, 0.15) 20%,
+    rgba(56, 189, 248, 0.7) 50%,
+    rgba(56, 189, 248, 0.15) 80%,
+    transparent 100%
+  );
+  animation: scan-sweep 2s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes scan-sweep {
+  0%   { top: 0%;   opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* faint horizontal lines that appear while scanning — like a CRT */
+.generated-image-scan::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 -120px 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(56, 189, 248, 0.02) 3px,
+    rgba(56, 189, 248, 0.02) 4px
+  );
+  pointer-events: none;
+}
+
+/* ===== Sidebar navigation loading ===== */
+
+.sidebar-select-wrapper {
+  position: relative;
+}
+
+.sidebar-select-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  background: rgba(8, 12, 20, 0.7);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  pointer-events: none;
+}
+
+.sidebar-select-overlay-text {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #38bdf8;
+}
+
+.sidebar-select--loading {
+  opacity: 0.5;
+}
+
+.sidebar-navigating {
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+/* ===== Page transition ===== */
+
+.page-transition {
+  opacity: 0;
+}
+
+.page-transition--visible {
+  opacity: 1;
+  transition: opacity 0.35s ease;
 }
