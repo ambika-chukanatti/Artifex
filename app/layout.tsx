@@ -12,10 +12,11 @@ const IBMPlex = IBM_Plex_Sans({
   variable: '--font-ibm-plex'
 });
 
-export const metadata: Metadata = {
-  title: "Artifex",
-  description: "AI-powered image generator",
-};
+ export const metadata: Metadata = {
+   title: "Artifex",
+   description: "AI-powered image generator",
+   other: { "darkreader-lock": "" }
+ };
 
 export default function RootLayout({
   children,
