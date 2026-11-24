@@ -1032,6 +1032,8 @@ body {
   border: 1px dashed rgba(56, 189, 248, 0.12);
   border-radius: 12px;
   background: rgba(15, 23, 42, 0.4);
+  position: relative;
+  overflow: hidden;
 }
 
 .generated-image-placeholder-icon {

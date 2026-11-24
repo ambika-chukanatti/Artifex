@@ -70,7 +70,10 @@ const GeneratedImage = ({
           )}
         </div>
       ) : (
-        <div className={`generated-image-placeholder${isTransforming ? " generated-image-frame--generating" : ""}`}>
+        // "relative overflow-hidden" keeps the scan line inside this box
+        <div
+          className={`generated-image-placeholder ${isTransforming ? " generated-image-frame--generating" : ""}`}
+        >
           {isTransforming && <div className="generated-image-scan" />}
           <span className="generated-image-placeholder-icon">✦</span>
           <span className="generated-image-placeholder-text">

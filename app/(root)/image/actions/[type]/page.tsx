@@ -25,7 +25,7 @@ const ImageActionsPage = async({ params }: SearchParamProps) => {
           action="Add"
           userId={user._id}
           type={imageAction.type as ImageActionTypeKey}
-          creditBalance={10}
+          creditBalance={user.creditBalance}
         />
     </section>
   );

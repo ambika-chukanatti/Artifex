@@ -250,4 +250,8 @@ export const urlPath = {
   backgroundReplace: 'replace-background-and-relight' 
 }
 
-export const creditFee = -1;
+export const CREATE_CREDIT_FEE = 2;
+export const TRANSFORM_CREDIT_FEE = 5;
+
+export const getCreditFee = (type: string) =>
+  type === "create" ? CREATE_CREDIT_FEE : TRANSFORM_CREDIT_FEE;

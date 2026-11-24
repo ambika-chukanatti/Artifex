@@ -89,6 +89,22 @@ const ImageActionFields = ({ type, form, OnTransformChange }: ImageActionFieldPr
         </div>
       )}
 
+      {/* Object to remove */}
+      {type === "remove" && (
+        <div className="sidebar-field">
+          <label className="sidebar-label">Object to Remove</label>
+          <input
+            type="text"
+            name="selectPrompt"
+            value={form.selectPrompt}
+            onChange={onInputChange}
+            placeholder="e.g. car, person, tree…"
+            className="sidebar-input"
+            required
+          />
+        </div>
+      )}
+
       {/* Object to recolor / replace */}
       {(type === "recolor" || type === "replace") && (
         <div className="sidebar-field">
