@@ -4,6 +4,8 @@ import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import ImageActionForm from "@/components/shared/ImageActionFrom"
 
+export const maxDuration = 60
+
 const ImageActionsPage = async({ params }: SearchParamProps) => {
   const { type } = await params; 
   const { userId } = await auth();
