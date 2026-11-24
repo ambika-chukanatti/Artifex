@@ -72,28 +72,3 @@ export async function deleteUser(clerkId: string) {
     handleError(error);
   }
 }
-
-export async function updateCredits(userId: string, creditFee: number) {
-  try {
-    await connectToDatabase();
-
-    const filter =
-      creditFee < 0
-        ? { _id: userId, creditBalance: { $gte: -creditFee } }
-        : { _id: userId };
-
-    const updatedUserCredits = await User.findOneAndUpdate(
-      filter,
-      { $inc: { creditBalance: creditFee } },
-      { new: true }
-    );
-
-    if (!updatedUserCredits) throw new Error("User credits update failed");
-
-    revalidatePath("/profile");
-
-    return JSON.parse(JSON.stringify(updatedUserCredits));
-  } catch (error) {
-    handleError(error);
-  }
-}

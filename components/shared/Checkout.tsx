@@ -5,17 +5,7 @@ import { useEffect } from "react"
 import { useToast } from "@/hooks/use-toast"
 import { checkoutCredits } from "@/lib/actions/transaction.actions"
 
-const Checkout = ({
-  plan,
-  amount,
-  credits,
-  buyerId,
-}: {
-  plan: string
-  amount: number
-  credits: number
-  buyerId: string
-}) => {
+const Checkout = ({ plan }: { plan: string }) => {
   const { toast } = useToast()
 
   useEffect(() => {
@@ -33,7 +23,7 @@ const Checkout = ({
   }, [])
 
   const onCheckout = async () => {
-    await checkoutCredits({ plan, amount, credits, buyerId })
+    await checkoutCredits({ plan })
   }
 
   return (

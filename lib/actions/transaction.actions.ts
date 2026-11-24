@@ -1,55 +1,47 @@
 "use server";
 
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 import Stripe from "stripe";
-import { handleError } from '../utils';
-import { connectToDatabase } from '../database/mongoose';
-import Transaction from '../database/models/transaction.model';
-import { updateCredits } from './user.actions';
+import { auth } from "@clerk/nextjs/server";
+import { plans } from "@/constants";
+import { connectToDatabase } from "../database/mongoose";
+import User from "../database/models/user.model";
 
-export async function checkoutCredits(transaction: CheckoutTransactionParams) {
+export async function checkoutCredits({ plan }: { plan: string }) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) throw new Error("Unauthorized");
+
+  const selectedPlan = plans.find((p) => p.name === plan && p.price > 0);
+  if (!selectedPlan) throw new Error("Invalid plan");
+
+  await connectToDatabase();
+  const buyer = await User.findOne({ clerkId });
+  if (!buyer) throw new Error("User not found");
+
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
-  const amount = Number(transaction.amount) * 100;
 
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         price_data: {
-          currency: 'usd',
-          unit_amount: amount,
+          currency: "usd",
+          unit_amount: selectedPlan.price * 100,
           product_data: {
-            name: transaction.plan,
-          }
+            name: selectedPlan.name,
+          },
         },
-        quantity: 1
-      }
+        quantity: 1,
+      },
     ],
     metadata: {
-      plan: transaction.plan,
-      credits: transaction.credits,
-      buyerId: transaction.buyerId,
+      plan: selectedPlan.name,
+      credits: String(selectedPlan.credits),
+      buyerId: buyer._id.toString(),
     },
-    mode: 'payment',
+    mode: "payment",
     success_url: `https://artifex-gamma.vercel.app/profile`,
     cancel_url: `https://artifex-gamma.vercel.app/credits`,
-  })
+  });
 
-  redirect(session.url!)
-}
-
-export async function createTransaction(transaction: CreateTransactionParams) {
-  try {
-    await connectToDatabase();
-
-    const newTransaction = await Transaction.create({
-      ...transaction, buyer: transaction.buyerId
-    })
-
-    await updateCredits(transaction.buyerId, transaction.credits);
-
-    return JSON.parse(JSON.stringify(newTransaction));
-  } catch (error) {
-    handleError(error)
-  }
+  redirect(session.url!);
 }
