@@ -67,14 +67,14 @@ body {
     @apply border-border;
   }
   html {
-    height: 100%;
+    min-height: 100%;
     background: #080c14;
+    color-scheme: dark;
   } 
   body {
     @apply bg-background text-foreground;
     background: #080c14;
     min-height: 100vh;
-    height: 100%;
   }
 }
 
